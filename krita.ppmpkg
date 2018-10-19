@@ -1,0 +1,18 @@
+meta:
+  name: "krita"
+  pretty: "Krita"
+  desc: "art program, mah boi"
+  author: "someone"
+  maintainer: "Carson Black"
+  version: "4.1.5"
+source:
+  url: "https://download.kde.org/stable/krita/4.1.5/krita-4.1.5-x86_64.appimage"
+  tar: "no"
+  filename: "krita-4.1.5-x86_64.appimage"
+desktop:
+  generic: "Art Tool"
+  name: "Krita (PPM)"
+  type: "Application"
+  exec: "$ppm/pkgs/krita-4.1.5-x86_64.appimage"
+  icon: "krita"
+  terminal: "false"
