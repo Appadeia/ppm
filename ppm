@@ -26,16 +26,27 @@ function parse {
 }
 function ppmhelp {
     echo "PPM v1"
-    echo "  ppm in <package>     | install a package"
-    echo "  ppm remove <package> | remove a package"
-    echo "  ppm installed        | list installed packages"
+    echo "  ppm install/in <package>     | install a package"
+    echo "  ppm remove/rm  <package>     | remove a package"
+    echo "  ppm installed                | list installed packages"
+}
+function desktop_gen {
+	>"$HOME/.local/share/applications/$PKG_meta_name.desktop"
+	echo "[Desktop Entry]" >> "$HOME/.local/share/applications/$PKG_meta_name.desktop"
+	echo "Name=$PKG_desktop_name" >> "$HOME/.local/share/applications/$PKG_meta_name.desktop"
+	echo "Type=$PKG_desktop_type" >> "$HOME/.local/share/applications/$PKG_meta_name.desktop"
+	echo "Exec=$PKG_desktop_exec" >> "$HOME/.local/share/applications/$PKG_meta_name.desktop"
+	echo "Icon=$PKG_desktop_icon" >> "$HOME/.local/share/applications/$PKG_meta_name.desktop"
+	echo "GenericName=$PKG_desktop_generic" >> "$HOME/.local/share/applications/$PKG_meta_name.desktop"
+	echo "Terminal=$PKG_desktop_terminal" >> "$HOME/.local/share/applications/$PKG_meta_name.desktop"
+	sudo update-desktop-database
 }
 trap "interrupt" INT
 case "$1" in
     read)
         parse_yaml $2 "PKG_"
     ;;
-    in)
+    install|in)
         parse $2
         if ls "$ppm/.pkgs" | grep "$PKG_meta_name"; then
             echo "Already installed."
@@ -55,11 +66,13 @@ case "$1" in
             mv "$ppm/.fetch/$PKG_source_filename" "$ppm/.pkgs/$PKG_meta_name"
             # TODO: make desktop entry
         fi
+	desktop_gen
     ;;
-    remove)
+    remove|rm)
         if ls "$ppm/.pkgs" | grep "$2"; then
             {
             rm -rf "$ppm/.pkgs/$2"
+	    rm "$HOME/.local/share/applications/$PKG_meta_name.desktop"
             }&>/dev/null
         else
             echo "not found"
